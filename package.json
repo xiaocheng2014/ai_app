@@ -2,6 +2,9 @@
   "name": "ai_app",
   "version": "1.0.0",
   "main": "main.js",
+  "dependencies": {
+    "electron-store": "^8.1.0"
+  },
   "scripts": {
     "start": "electron .",
     "build": "electron-builder -mwl",
@@ -37,6 +40,7 @@
     }
   },
   "devDependencies": {
+    "electron": "^34.2.0",
     "electron-builder": "^25.1.8"
   }
 }

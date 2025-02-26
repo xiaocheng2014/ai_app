@@ -1,10 +1,6 @@
-import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import Store from 'electron-store';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
+const path = require('path');
+const Store = require('electron-store');
 
 const store = new Store({
   cwd: path.join(app.getPath('home'), '.ai_app')
