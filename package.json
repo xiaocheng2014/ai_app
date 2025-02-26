@@ -1,0 +1,9 @@
+{
+  "name": "ai_app",
+  "version": "1.0.0",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron ."
+  }
+}

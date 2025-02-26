@@ -1,0 +1,78 @@
+import { app, BrowserWindow, ipcMain } from 'electron';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import Store from 'electron-store';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const store = new Store({
+  cwd: path.join(app.getPath('home'), '.ai_app')
+});
+
+function createWindow() {
+  const mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      webviewTag: true
+    }
+  });
+
+  mainWindow.loadFile('index.html');
+}
+
+app.whenReady().then(createWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
+ipcMain.handle('get-links', () => {
+  return store.get('links', []);
+});
+
+ipcMain.handle('save-links', (event, links) => {
+  store.set('links', links);
+  return true;
+});
+
+// 在其他 ipcMain handlers 后添加
+ipcMain.handle('show-input-dialog', async () => {
+  const result = await dialog.showMessageBox({
+    title: '添加链接',
+    buttons: ['确定', '取消'],
+    type: 'question',
+    message: '请输入链接信息',
+    defaultId: 0,
+    cancelId: 1,
+    inputFields: [
+      {
+        label: '名称',
+        type: 'text'
+      },
+      {
+        label: 'URL',
+        type: 'text'
+      }
+    ]
+  });
+  
+  if (result.response === 0) {
+    return {
+      name: result.inputFields[0],
+      url: result.inputFields[1]
+    };
+  }
+  return null;
+});
