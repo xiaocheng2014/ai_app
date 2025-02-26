@@ -9,43 +9,63 @@
       height: 100vh;
     }
     #sidebar {
-      width: 200px;
-      min-width: 100px;
+      width: 100px;
+      min-width: 150px;
       max-width: 400px;
-      background: #f5f5f5;
-      border-right: 1px solid #ddd;
+      background: #f8f9fa;
+      border-right: 1px solid #e9ecef;
       display: flex;
       flex-direction: column;
       resize: horizontal;
       overflow: auto;
-    }
-    #content {
-      flex: 1;
-      display: flex;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
     }
     #linkList {
       list-style: none;
-      padding: 10px;
+      padding: 15px;
       margin: 0;
       flex: 1;
       overflow-y: auto;
     }
     #linkList li {
-      padding: 8px;
-      margin-bottom: 5px;
+      padding: 12px 15px;
+      margin-bottom: 8px;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 6px;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+      font-size: 14px;
     }
     #linkList li:hover {
-      background: #e0e0e0;
+      background: #f0f0f0;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     }
-    webview {
-      width: 100%;
-      height: 100%;
+    #webview {
+        width: 100%;
+        height: 100%;
+    }
+    #content {
+        width: 100%;
     }
     .controls {
-      padding: 10px;
-      border-top: 1px solid #ddd;
+      padding: 15px;
+      border-top: 1px solid #e9ecef;
+      background: white;
+    }
+    .controls button {
+      width: 100%;
+      padding: 8px 15px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .controls button:hover {
+      background: #0056b3;
     }
   </style>
 </head>
