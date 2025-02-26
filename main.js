@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Store from 'electron-store';
@@ -10,8 +10,10 @@ const store = new Store({
   cwd: path.join(app.getPath('home'), '.ai_app')
 });
 
+let mainWindow = null;
+
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
@@ -24,9 +26,24 @@ function createWindow() {
   mainWindow.loadFile('index.html');
 }
 
-app.whenReady().then(createWindow);
+function toggleWindow() {
+  if (mainWindow === null) {
+    createWindow();
+  } else if (mainWindow.isVisible()) {
+    mainWindow.hide();
+  } else {
+    mainWindow.show();
+  }
+}
 
-app.on('window-all-closed', () => {
+app.whenReady().then(() => {
+  // 注册全局快捷键 (Command+Shift+A)
+  globalShortcut.register('CommandOrControl+B', toggleWindow);
+  createWindow();
+});
+
+// 当所有窗口关闭时，不要退出应用
+app.on('window-all-closed', (event) => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -36,6 +53,11 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+// 应用退出时注销快捷键
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll();
 });
 
 ipcMain.handle('get-links', () => {
