@@ -1,6 +1,8 @@
 {
   "name": "ai_app",
   "version": "1.0.0",
+  "email": "594468098@qq.com",
+  "author": "xiaocheng <594468098@qq.com>",
   "main": "main.js",
   "dependencies": {
     "electron-store": "^8.1.0"
