@@ -1,6 +1,6 @@
 {
   "name": "ai_app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "email": "594468098@qq.com",
   "author": "xiaocheng <594468098@qq.com>",
   "main": "main.js",
@@ -25,18 +25,31 @@
       "target": [
         "dmg",
         "zip"
-      ]
+      ],
+      "arch": ["x64", "arm64", "universal"]
     },
     "win": {
       "target": [
-        "nsis",
-        "portable"
+        {
+          "target": "nsis",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64", "arm64"]
+        }
       ]
     },
     "linux": {
       "target": [
-        "AppImage",
-        "deb"
+        {
+          "target": "AppImage",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64", "arm64"]
+        }
       ],
       "category": "Utility"
     }
