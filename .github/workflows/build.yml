@@ -16,8 +16,6 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    
     strategy:
       matrix:
         include:
@@ -28,9 +26,10 @@ jobs:
           - os: ubuntu-latest
             platform: linux
     
-    if: |
-      github.event.inputs.platform == 'all' ||
-      github.event.inputs.platform == matrix.platform
+    runs-on: ${{ matrix.os }}
+    
+    # 修复 if 条件表达式
+    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == matrix.platform }}
 
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +45,6 @@ jobs:
       - name: Build Application
         run: npm run build:${{ matrix.platform }}
         env:
-          # 启用 universal binary 构建支持（仅 macOS）
           CSC_IDENTITY_AUTO_DISCOVERY: false
           
       - name: Upload artifacts
