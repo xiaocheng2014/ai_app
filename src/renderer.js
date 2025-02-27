@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // 设置初始欢迎页面
+  webview.setAttribute('src', 'welcome.html');
+
   // 添加链接按钮事件监听
   document.getElementById('addLinkBtn').addEventListener('click', addLink);
 

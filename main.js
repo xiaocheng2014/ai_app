@@ -19,7 +19,7 @@ function createWindow() {
     }
   });
 
-  mainWindow.loadFile('index.html');
+  mainWindow.loadFile('src/index.html');
 }
 
 function toggleWindow() {
