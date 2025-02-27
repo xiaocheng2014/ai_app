@@ -18,7 +18,7 @@ jobs:
   build:
     strategy:
       matrix:
-        include:
+        config:
           - os: macos-latest
             platform: mac
           - os: windows-latest
@@ -26,10 +26,9 @@ jobs:
           - os: ubuntu-latest
             platform: linux
     
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
     
-    # 修复 if 条件表达式
-    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == matrix.platform }}
+    if: ${{ inputs.platform == 'all' || inputs.platform == matrix.config.platform }}
 
     steps:
       - uses: actions/checkout@v4
@@ -43,12 +42,12 @@ jobs:
         run: npm install
         
       - name: Build Application
-        run: npm run build:${{ matrix.platform }}
+        run: npm run build:${{ matrix.config.platform }}
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
           
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.platform }}-build
+          name: ${{ matrix.config.platform }}-build
           path: dist/
