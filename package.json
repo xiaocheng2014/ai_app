@@ -1,6 +1,7 @@
 {
   "name": "ai_app",
   "version": "1.0.1",
+  "description": "自定义链接的浏览应用",
   "email": "594468098@qq.com",
   "author": "xiaocheng <594468098@qq.com>",
   "main": "main.js",
@@ -23,10 +24,15 @@
     "mac": {
       "category": "public.app-category.utilities",
       "target": [
-        "dmg",
-        "zip"
-      ],
-      "arch": ["x64", "arm64", "universal"]
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
+      ]
     },
     "win": {
       "target": [
