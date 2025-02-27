@@ -1,10 +1,16 @@
 const { ipcRenderer } = require('electron');
 
 let links = [];
+let activeIndex = -1;
 
+// 修改 loadLinks 函数确保正确加载数据
 async function loadLinks() {
-  links = await ipcRenderer.invoke('get-links');
-  renderLinks();
+  try {
+    links = await ipcRenderer.invoke('get-links');
+    renderLinks();
+  } catch (error) {
+    console.error('加载链接失败:', error);
+  }
 }
 
 function renderLinks() {
@@ -13,7 +19,20 @@ function renderLinks() {
   links.forEach((link, index) => {
     const li = document.createElement('li');
     li.textContent = link.name;
-    li.onclick = () => loadUrl(link.url);
+    // 添加选中状态的类
+    if (index === activeIndex) {
+      li.classList.add('active');
+    }
+    li.onclick = () => {
+      // 更新选中状态
+      const items = linkList.getElementsByTagName('li');
+      for (let item of items) {
+        item.classList.remove('active');
+      }
+      li.classList.add('active');
+      activeIndex = index;
+      loadUrl(link.url);
+    };
     linkList.appendChild(li);
   });
 }
@@ -44,17 +63,19 @@ function confirmAdd() {
   }
 }
 
-// 初始化 webview
-const webview = document.getElementById('webview');
-webview.addEventListener('dom-ready', () => {
-  // 设置 webview 的 CSP
-  webview.setWebPreferences({
-    webSecurity: false
+// 修改初始化部分
+document.addEventListener('DOMContentLoaded', () => {
+  // 初始化 webview
+  const webview = document.getElementById('webview');
+  webview.addEventListener('dom-ready', () => {
+    webview.setWebPreferences({
+      webSecurity: false
+    });
   });
+
+  // 添加链接按钮事件监听
+  document.getElementById('addLinkBtn').addEventListener('click', addLink);
+
+  // 加载保存的链接
+  loadLinks();
 });
-
-// Add event listener for the add link button
-document.getElementById('addLinkBtn').addEventListener('click', addLink);
-
-// 加载保存的链接
-loadLinks();
