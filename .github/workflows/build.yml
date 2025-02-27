@@ -15,39 +15,61 @@ on:
           - linux
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        config:
-          - os: macos-latest
-            platform: mac
-          - os: windows-latest
-            platform: win
-          - os: ubuntu-latest
-            platform: linux
-    
-    runs-on: ${{ matrix.config.os }}
-    
-    if: ${{ inputs.platform == 'all' || inputs.platform == matrix.config.platform }}
-
+  build-mac:
+    runs-on: macos-latest
+    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'mac' }}
     steps:
       - uses: actions/checkout@v4
-      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
       - name: Install dependencies
         run: npm install
-        
       - name: Build Application
-        run: npm run build:${{ matrix.config.platform }}
+        run: npm run build:mac
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
-          
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.config.platform }}-build
+          name: mac-build
+          path: dist/
+
+  build-windows:
+    runs-on: windows-latest
+    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'win' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Build Application
+        run: npm run build:win
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-build
+          path: dist/
+
+  build-linux:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'linux' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Build Application
+        run: npm run build:linux
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-build
           path: dist/
