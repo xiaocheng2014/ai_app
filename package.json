@@ -58,6 +58,9 @@
         }
       ],
       "category": "Utility"
+    },
+    "config": {
+      "appDataPath": ".ai_app"
     }
   },
   "devDependencies": {

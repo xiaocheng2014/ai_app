@@ -82,3 +82,61 @@ document.addEventListener('DOMContentLoaded', () => {
   // 加载保存的链接
   loadLinks();
 });
+
+
+// 在文件末尾添加
+async function updateShortcut(newShortcut) {
+  try {
+    const success = await ipcRenderer.invoke('update-shortcut', newShortcut);
+    if (success) {
+      alert('快捷键设置成功！');
+    } else {
+      alert('快捷键设置失败，请尝试其他组合键');
+    }
+  } catch (error) {
+    console.error('更新快捷键失败:', error);
+    alert('快捷键设置失败');
+  }
+}
+
+async function getCurrentShortcut() {
+  return await ipcRenderer.invoke('get-shortcut');
+}
+
+// 在 DOMContentLoaded 事件监听器中添加
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+
+// 添加设置相关函数
+async function openSettings() {
+  document.getElementById('settingsModal').style.display = 'block';
+  const currentShortcut = await getCurrentShortcut();
+  document.getElementById('shortcutInput').value = currentShortcut;
+}
+
+function closeSettings() {
+  document.getElementById('settingsModal').style.display = 'none';
+}
+
+async function saveSettings() {
+  const newShortcut = document.getElementById('shortcutInput').value;
+  await updateShortcut(newShortcut);
+  closeSettings();
+}
+
+// 添加快捷键输入处理
+document.getElementById('shortcutInput').addEventListener('keydown', (e) => {
+  e.preventDefault();
+  const keys = [];
+  if (e.metaKey) keys.push('Command');
+  if (e.ctrlKey) keys.push('Control');
+  if (e.altKey) keys.push('Alt');
+  if (e.shiftKey) keys.push('Shift');
+  
+  if (e.key && !['Meta', 'Control', 'Alt', 'Shift'].includes(e.key)) {
+    keys.push(e.key.toUpperCase());
+  }
+  
+  if (keys.length > 0) {
+    document.getElementById('shortcutInput').value = keys.join('+');
+  }
+});

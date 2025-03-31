@@ -79,8 +79,28 @@
 <body>
   <div id="sidebar">
     <ul id="linkList"></ul>
+    <!-- 在 controls div 中添加设置按钮 -->
     <div class="controls">
       <button id="addLinkBtn">添加链接</button>
+      <button id="settingsBtn" style="margin-top: 10px; background: #6c757d;">设置</button>
+    </div>
+    
+    <!-- 在 body 末尾添加设置对话框 -->
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+        <h3>设置</h3>
+        <div>
+          <label>全局快捷键：</label>
+          <input type="text" id="shortcutInput" placeholder="点击输入新快捷键" readonly>
+          <p style="font-size: 12px; color: #666;">
+            提示：可使用如 CommandOrControl+B, CommandOrControl+Shift+A 等组合
+          </p>
+        </div>
+        <div class="modal-buttons">
+          <button onclick="closeSettings()">取消</button>
+          <button onclick="saveSettings()">保存</button>
+        </div>
+      </div>
     </div>
   </div>
   <div id="content">
