@@ -5,6 +5,9 @@
   "email": "594468098@qq.com",
   "author": "xiaocheng <594468098@qq.com>",
   "main": "main.js",
+  "config": {
+    "appDataPath": ".ai_app"
+  },
   "dependencies": {
     "electron-store": "^8.1.0"
   },
@@ -58,9 +61,6 @@
         }
       ],
       "category": "Utility"
-    },
-    "config": {
-      "appDataPath": ".ai_app"
     }
   },
   "devDependencies": {
