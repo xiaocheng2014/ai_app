@@ -7,7 +7,9 @@
       margin: 0;
       display: flex;
       height: 100vh;
+      overflow: hidden;  /* 防止出现滚动条 */
     }
+
     #sidebar {
       width: 100px;
       min-width: 150px;
@@ -19,7 +21,40 @@
       resize: horizontal;
       overflow: auto;
       box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+      position: absolute;  /* 改为绝对定位 */
+      height: 100%;
+      z-index: 100;
     }
+
+    #sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    #toggleButton {
+      position: fixed;
+      left: 10px;
+      top: 10px;
+      z-index: 1001;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: background 0.2s ease;
+    }
+
+    #toggleButton:hover {
+      background: #0056b3;
+    }
+
     #linkList {
       list-style: none;
       padding: 15px;
@@ -27,6 +62,7 @@
       flex: 1;
       overflow-y: auto;
     }
+
     #linkList li {
       padding: 12px 15px;
       margin-bottom: 8px;
@@ -37,30 +73,47 @@
       transition: all 0.2s ease;
       font-size: 14px;
     }
-    /* 添加选中状态的样式 */
+
     #linkList li.active {
       background: #007bff;
       color: white;
       transform: translateY(-1px);
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
+
     #linkList li:hover {
       background: #f0f0f0;
       transform: translateY(-1px);
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     }
+
     #webview {
-        width: 100%;
-        height: 100%;
+      width: 100%;
+      height: 100%;
     }
+
     #content {
-        width: 100%;
+      flex: 1;
+      height: 100%;
+      margin-left: 0;  /* 重置左边距 */
+      transition: margin-left 0.3s ease;  /* 添加过渡效果 */
     }
+
+    /* 当侧边栏未隐藏时，给内容区域添加左边距 */
+    #sidebar:not(.hidden) + #content {
+      margin-left: 150px;  /* 与侧边栏的 min-width 相同 */
+    }
+    #webview {
+      width: 100%;
+      height: 100%;
+    }
+
     .controls {
       padding: 15px;
       border-top: 1px solid #e9ecef;
       background: white;
     }
+
     .controls button {
       width: 100%;
       padding: 8px 15px;
@@ -71,87 +124,92 @@
       cursor: pointer;
       transition: background 0.2s ease;
     }
+
     .controls button:hover {
       background: #0056b3;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+    }
+
+    .modal input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+    }
+
+    .modal-buttons {
+      text-align: right;
+      margin-top: 15px;
+    }
+
+    .modal-buttons button {
+      margin-left: 10px;
     }
   </style>
 </head>
 <body>
+  <button id="toggleButton">≡</button>
   <div id="sidebar">
     <ul id="linkList"></ul>
-    <!-- 在 controls div 中添加设置按钮 -->
     <div class="controls">
       <button id="addLinkBtn">添加链接</button>
       <button id="settingsBtn" style="margin-top: 10px; background: #6c757d;">设置</button>
     </div>
-    
-    <!-- 在 body 末尾添加设置对话框 -->
-    <div id="settingsModal" class="modal">
-      <div class="modal-content">
-        <h3>设置</h3>
-        <div>
-          <label>全局快捷键：</label>
-          <input type="text" id="shortcutInput" placeholder="点击输入新快捷键" readonly>
-          <p style="font-size: 12px; color: #666;">
-            提示：可使用如 CommandOrControl+B, CommandOrControl+Shift+A 等组合
-          </p>
-        </div>
-        <div class="modal-buttons">
-          <button onclick="closeSettings()">取消</button>
-          <button onclick="saveSettings()">保存</button>
-        </div>
-      </div>
-    </div>
   </div>
+  
   <div id="content">
     <webview id="webview" allowpopups></webview>
   </div>
-  <script src="renderer.js"></script>
-<style>
-  /* 添加到现有的 style 标签中 */
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-  }
-  .modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-  }
-  .modal input {
-    width: 100%;
-    margin: 10px 0;
-    padding: 8px;
-  }
-  .modal-buttons {
-    text-align: right;
-    margin-top: 15px;
-  }
-  .modal-buttons button {
-    margin-left: 10px;
-  }
-</style>
 
-<!-- 在 body 末尾添加 -->
-<div id="addLinkModal" class="modal">
-  <div class="modal-content">
-    <h3>添加链接</h3>
-    <input type="text" id="linkName" placeholder="链接名称">
-    <input type="text" id="linkUrl" placeholder="链接地址">
-    <div class="modal-buttons">
-      <button onclick="cancelAdd()">取消</button>
-      <button onclick="confirmAdd()">确定</button>
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <h3>设置</h3>
+      <div>
+        <label>全局快捷键：</label>
+        <input type="text" id="shortcutInput" placeholder="点击输入新快捷键" readonly>
+        <p style="font-size: 12px; color: #666;">
+          提示：可使用如 CommandOrControl+B, CommandOrControl+Shift+A 等组合
+        </p>
+      </div>
+      <div class="modal-buttons">
+        <button onclick="closeSettings()">取消</button>
+        <button onclick="saveSettings()">保存</button>
+      </div>
     </div>
   </div>
-</div>
+
+  <div id="addLinkModal" class="modal">
+    <div class="modal-content">
+      <h3>添加链接</h3>
+      <input type="text" id="linkName" placeholder="链接名称">
+      <input type="text" id="linkUrl" placeholder="链接地址">
+      <div class="modal-buttons">
+        <button onclick="cancelAdd()">取消</button>
+        <button onclick="confirmAdd()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

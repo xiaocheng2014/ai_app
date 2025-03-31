@@ -104,6 +104,10 @@ async function getCurrentShortcut() {
 }
 
 // 在 DOMContentLoaded 事件监听器中添加
+document.getElementById('toggleButton').addEventListener('click', () => {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('hidden');
+});
 document.getElementById('settingsBtn').addEventListener('click', openSettings);
 
 // 添加设置相关函数
